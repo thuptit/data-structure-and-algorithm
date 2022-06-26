@@ -2,33 +2,43 @@
 
 using namespace std;
 
+#define ll long long
+ 
+int n, p;
+string s;  
+map<ll, ll> maps;
+ 
+ll aPowB(int a, int b){
+	if(b == 0) return 1;
+	ll tmp = aPowB(a, b/2);
+	if(b % 2 == 0) return (tmp * tmp) % p;
+	return ((tmp * tmp) % p * a)  % p;
+}
+ 
 int main(){
-	int n, P;
-	cin >> n >> P;
-	string s; cin >> s;
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
 	
-	int k = 1; 
-	int count = 0;
-	vector<int> v;
-	while(k <= n){
-		vector<int> v1;
-		for(int i = 0 ; i < n ; i++){
-			if(i + k > n) break;
-			if(k == 1){
-				if((s[i] - 48) % P == 0) count++;
-				v1.push_back(s[i]-48);
-			}
-			else{
-				int res = (v[i] * 10 + (s[i+k-1]-48)) % P;
-				if(res % P == 0) {
-					count++;
-				}
-				v1.push_back(res);
-			}
-			cout << i <<endl;
+	cin >> n >> p;
+	cin >> s; s = '*' + s;
+	if(p == 2 || p == 5){
+		ll ans = 0;
+		for(int i = 1 ; i <= n; i++){
+			if((s[i] - 48) % p == 0 ) ans+=i;
 		}
-		v = v1;
-		k++;
+		cout << ans;
+		return 0;
 	}
-	cout << count;
+	
+	ll cur = 0, ans = 0;
+	maps[0]++;
+	for(int i = 1; i <= n; i++){
+		cur = (cur + (s[i] - 48) * aPowB(10, n-i+1) % p) % p;
+		ans += maps[cur];
+		maps[cur]++;
+	}
+	cout << ans;
+	
+	return 0;
 }
